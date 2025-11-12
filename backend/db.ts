@@ -1,8 +1,9 @@
 import mysql from "mysql2/promise";
+import type { Pool } from "mysql2/promise";
 
-let pool: mysql.Pool | null = null;
+let pool: Pool | null = null;
 
-export function getPool() {
+export function getPool(): Pool {
   if (!pool) {
     pool = mysql.createPool({
       host: process.env.DB_HOST!,
@@ -12,7 +13,7 @@ export function getPool() {
       database: process.env.DB_NAME!,
       ssl: process.env.SSL_CA ? { ca: process.env.SSL_CA } : undefined,
       connectionLimit: 5,
-      waitForConnections: true,
+      waitForConnections: true
     });
   }
   return pool;
