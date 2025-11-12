@@ -3,14 +3,16 @@ import { getPool } from "../db";
 
 const router = new Hono();
 
+// GET /api/plate
 router.get("/", async (c) => {
   const db = getPool();
   const [rows] = await db.query("SELECT id, plate FROM plate ORDER BY id DESC");
   return c.json(rows);
 });
 
+// POST /api/plate  { plate: string }
 router.post("/", async (c) => {
-  const body = await c.req.json().catch(() => null) as { plate?: string } | null;
+  const body = (await c.req.json().catch(() => null)) as { plate?: string } | null;
   const value = body?.plate?.trim();
   if (!value) return c.json({ detail: "Invalid body" }, 422);
 
@@ -22,6 +24,7 @@ router.post("/", async (c) => {
   return c.json((rows as any[])[0], 201);
 });
 
+// GET /api/plate/search?id=&plate=&partial=&limit=&offset=
 router.get("/search", async (c) => {
   const id = c.req.query("id");
   const plate = c.req.query("plate");
@@ -32,19 +35,35 @@ router.get("/search", async (c) => {
   let sql = "SELECT id, plate FROM plate WHERE 1=1";
   const params: any[] = [];
 
-  if (id) { sql += " AND id = ?"; params.push(Number(id)); }
-  if (plate) {
-    if (partial) { sql += " AND plate LIKE ?"; params.push(`%${plate}%`); }
-    else         { sql += " AND plate = ?";     params.push(plate); }
+  if (id) {
+    sql += " AND id = ?";
+    params.push(Number(id));
   }
-  if (offsetQ) { sql += " OFFSET ?"; params.push(Number(offsetQ)); }
-  if (limitQ)  { sql += " LIMIT ?";  params.push(Number(limitQ)); }
+  if (plate) {
+    if (partial) {
+      sql += " AND plate LIKE ?";
+      params.push(`%${plate}%`);
+    } else {
+      sql += " AND plate = ?";
+      params.push(plate);
+    }
+  }
+  sql += " ORDER BY id DESC";
+  if (offsetQ) {
+    sql += " OFFSET ?";
+    params.push(Number(offsetQ));
+  }
+  if (limitQ) {
+    sql += " LIMIT ?";
+    params.push(Number(limitQ));
+  }
 
   const db = getPool();
   const [rows] = await db.query(sql, params);
   return c.json(rows);
 });
 
+// GET /api/plate/:id
 router.get("/:id", async (c) => {
   const id = Number(c.req.param("id"));
   if (!id || Number.isNaN(id)) return c.json({ detail: "Invalid id" }, 422);

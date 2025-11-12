@@ -5,13 +5,14 @@ import plateRoutes from "../backend/routes/plate";
 import reportRoutes from "../backend/routes/report";
 
 const app = new Hono();
+
 app.use("*", cors());
 
-app.get("/", c => c.json({ status: "ok", message: "API is running" }));
+app.get("/", (c) => c.json({ status: "ok", message: "API is running" }));
+
 app.route("/plate", plateRoutes);
 app.route("/report", reportRoutes);
 
-// Node.js runtime (no Edge) para MySQL
 export const config = { runtime: "nodejs" };
 
 export default handle(app);
