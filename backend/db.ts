@@ -13,7 +13,7 @@ export function getPool(): Pool {
       database: process.env.DB_NAME!,
       ssl: process.env.SSL_CA ? { ca: process.env.SSL_CA } : undefined,
       connectionLimit: 5,
-      waitForConnections: true
+      waitForConnections: true,
     });
   }
   return pool;
