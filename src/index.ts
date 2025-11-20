@@ -4,7 +4,7 @@ import reportRoutes from "./routes/report.js";
 
 const app = new Hono();
 
-app.get("/", (c) => c.text("API running"));
+app.get("/", (c) => c.text("API running 2"));
 
 app.route("/plate", plateRoutes);
 app.route("/report", reportRoutes);
