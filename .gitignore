@@ -1,24 +1,32 @@
-# -------------------------
-# Node / npm / yarn / pnpm
-# -------------------------
+# dev
+.yarn/
+!.yarn/releases
+.vscode/*
+!.vscode/launch.json
+!.vscode/*.code-snippets
+.idea/workspace.xml
+.idea/usage.statistics.xml
+.idea/shelf
+
+# deps
 node_modules/
+
+# env
+.env
+.env.production
+
+# logs
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-package-lock.json
-pnpm-lock.yaml
-yarn.lock
+lerna-debug.log*
 
-# -------------------------
-# Build output (Next/Vite/etc)
-# -------------------------
-.vercel/
-.next/
-out/
-dist/
-build/
-.tsbuildinfo
+# misc
+.DS_Store
+.vercel
 
 # -------------------------
 # Environment variables
@@ -26,62 +34,3 @@ build/
 .env
 .env.*
 !.env.example
-
-# -------------------------
-# Logs
-# -------------------------
-logs/
-*.log
-*.log.*
-debug.log
-
-# -------------------------
-# macOS
-# -------------------------
-.DS_Store
-.AppleDouble
-.LSOverride
-Icon?
-._*
-
-# -------------------------
-# IDE / Editors
-# -------------------------
-.vscode/
-.idea/
-*.swp
-*.swo
-*.swn
-
-# -------------------------
-# TypeScript
-# -------------------------
-*.tsbuildinfo
-
-# -------------------------
-# React Native / Expo (por si usás herramientas en paralelo)
-# -------------------------
-.expo/
-.expo-shared/
-.expo-source/
-android/
-ios/
-*.apk
-*.aab
-
-# -------------------------
-# Misc
-# -------------------------
-coverage/
-cache/
-*.bak
-*.tmp
-*.temp
-
-# -------------------------
-# Vercel local cache
-# -------------------------
-.vercel/
-.vercel_build_output/
-.vercel
-.env*.local

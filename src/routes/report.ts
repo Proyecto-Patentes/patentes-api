@@ -1,9 +1,9 @@
 import { Hono } from "hono";
-import { getPool } from "../db";
+import { getPool } from "../db.js";
 
 const router = new Hono();
 
-// GET /api/report  (incluye plate embebido)
+// GET /report  -> lista reports con plate embebido
 router.get("/", async (c) => {
   const db = getPool();
   const [rows] = await db.query(
@@ -13,7 +13,7 @@ router.get("/", async (c) => {
        r.report_category_id,
        r.plate_id,
        r.created_at,
-       p.id   AS plate_inner_id,
+       p.id    AS plate_inner_id,
        p.plate AS plate_value
      FROM report r
      LEFT JOIN plate p ON p.id = r.plate_id
@@ -32,7 +32,7 @@ router.get("/", async (c) => {
   return c.json(data);
 });
 
-// POST /api/report  { user_id:number, report_category_id:number, plate_id:number }
+// POST /report  { user_id:number, report_category_id:number, plate_id:number }
 router.post("/", async (c) => {
   const b = (await c.req.json().catch(() => null)) as
     | { user_id?: number; report_category_id?: number; plate_id?: number }
@@ -61,7 +61,7 @@ router.post("/", async (c) => {
        r.report_category_id,
        r.plate_id,
        r.created_at,
-       p.id   AS plate_inner_id,
+       p.id    AS plate_inner_id,
        p.plate AS plate_value
      FROM report r
      LEFT JOIN plate p ON p.id = r.plate_id

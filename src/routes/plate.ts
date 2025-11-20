@@ -1,16 +1,16 @@
 import { Hono } from "hono";
-import { getPool } from "../db";
+import { getPool } from "../db.js";
 
 const router = new Hono();
 
-// GET /api/plate
+// GET /plate  -> lista todo
 router.get("/", async (c) => {
   const db = getPool();
   const [rows] = await db.query("SELECT id, plate FROM plate ORDER BY id DESC");
   return c.json(rows);
 });
 
-// POST /api/plate  { plate: string }
+// POST /plate  { plate: string } -> crea y devuelve el registro
 router.post("/", async (c) => {
   const body = (await c.req.json().catch(() => null)) as { plate?: string } | null;
   const value = body?.plate?.trim();
@@ -24,7 +24,7 @@ router.post("/", async (c) => {
   return c.json((rows as any[])[0], 201);
 });
 
-// GET /api/plate/search?id=&plate=&partial=&limit=&offset=
+// GET /plate/search?id=&plate=&partial=&limit=&offset=
 router.get("/search", async (c) => {
   const id = c.req.query("id");
   const plate = c.req.query("plate");
@@ -35,35 +35,22 @@ router.get("/search", async (c) => {
   let sql = "SELECT id, plate FROM plate WHERE 1=1";
   const params: any[] = [];
 
-  if (id) {
-    sql += " AND id = ?";
-    params.push(Number(id));
-  }
+  if (id) { sql += " AND id = ?"; params.push(Number(id)); }
   if (plate) {
-    if (partial) {
-      sql += " AND plate LIKE ?";
-      params.push(`%${plate}%`);
-    } else {
-      sql += " AND plate = ?";
-      params.push(plate);
-    }
+    if (partial) { sql += " AND plate LIKE ?"; params.push(`%${plate}%`); }
+    else         { sql += " AND plate = ?";     params.push(plate); }
   }
+
   sql += " ORDER BY id DESC";
-  if (offsetQ) {
-    sql += " OFFSET ?";
-    params.push(Number(offsetQ));
-  }
-  if (limitQ) {
-    sql += " LIMIT ?";
-    params.push(Number(limitQ));
-  }
+  if (offsetQ) { sql += " OFFSET ?"; params.push(Number(offsetQ)); }
+  if (limitQ)  { sql += " LIMIT ?";  params.push(Number(limitQ));  }
 
   const db = getPool();
   const [rows] = await db.query(sql, params);
   return c.json(rows);
 });
 
-// GET /api/plate/:id
+// GET /plate/:id
 router.get("/:id", async (c) => {
   const id = Number(c.req.param("id"));
   if (!id || Number.isNaN(id)) return c.json({ detail: "Invalid id" }, 422);
