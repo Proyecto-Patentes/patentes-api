@@ -3,7 +3,6 @@ import { getPool } from "../db.js";
 
 const router = new Hono();
 
-// GET /report  -> lista reports con plate embebido
 router.get("/", async (c) => {
   const db = getPool();
   const [rows] = await db.query(
@@ -32,7 +31,6 @@ router.get("/", async (c) => {
   return c.json(data);
 });
 
-// POST /report  { user_id:number, report_category_id:number, plate_id:number }
 router.post("/", async (c) => {
   const b = (await c.req.json().catch(() => null)) as
     | { user_id?: number; report_category_id?: number; plate_id?: number }

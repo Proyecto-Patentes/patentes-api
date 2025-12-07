@@ -3,14 +3,12 @@ import { getPool } from "../db.js";
 
 const router = new Hono();
 
-// GET /plate  -> lista todo
 router.get("/", async (c) => {
   const db = getPool();
   const [rows] = await db.query("SELECT id, plate FROM plate ORDER BY id DESC");
   return c.json(rows);
 });
 
-// POST /plate  { plate: string } -> crea y devuelve el registro
 router.post("/", async (c) => {
   const body = (await c.req.json().catch(() => null)) as { plate?: string } | null;
   const value = body?.plate?.trim();
@@ -24,7 +22,6 @@ router.post("/", async (c) => {
   return c.json((rows as any[])[0], 201);
 });
 
-// GET /plate/search?id=&plate=&partial=&limit=&offset=
 router.get("/search", async (c) => {
   const id = c.req.query("id");
   const plate = c.req.query("plate");
@@ -50,7 +47,6 @@ router.get("/search", async (c) => {
   return c.json(rows);
 });
 
-// GET /plate/:id
 router.get("/:id", async (c) => {
   const id = Number(c.req.param("id"));
   if (!id || Number.isNaN(id)) return c.json({ detail: "Invalid id" }, 422);

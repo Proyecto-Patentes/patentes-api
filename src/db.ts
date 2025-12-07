@@ -11,7 +11,6 @@ export function getPool(): Pool {
       user: process.env.DB_USER!,
       password: process.env.DB_PASS!,
       database: process.env.DB_NAME!,
-      // Si tu proveedor exige TLS, usá SSL_CA como PEM completo (BEGIN/END)
       ssl: process.env.SSL_CA ? { ca: process.env.SSL_CA } : undefined,
       connectionLimit: 5,
       waitForConnections: true
