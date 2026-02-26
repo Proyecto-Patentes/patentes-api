@@ -93,7 +93,6 @@ router.post("/", async (c) => {
     return c.json({ detail: "Some categories not found" }, 422);
   }
   const severitySum = catRows.reduce((sum, r) => sum + Number(r.severity), 0);
-  const severityAvg = severitySum / catRows.length;
 
   // insert report
   const [res] = await db.execute(
@@ -104,7 +103,7 @@ router.post("/", async (c) => {
       b.description || null,
       b.latitude || null,
       b.longitude || null,
-      severityAvg,
+      severitySum,
     ]
   );
   const id = (res as any).insertId;
